@@ -18,7 +18,8 @@ struct LoginView: View {
         VStack(spacing: 16){
             Image(.logo)
                 .resizable()
-                .frame(width: 190, height: 60)
+                .scaledToFit()
+                .frame(width: 200)
                 .padding(.top)
             
             Text("Olá!")
@@ -27,6 +28,7 @@ struct LoginView: View {
                 .padding(.top)
                 .bold()
                 .foregroundStyle(.accent)
+                .font(.title3)
             
             Text("Preencha para acessar sua conta")
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -39,6 +41,7 @@ struct LoginView: View {
                 .padding(.horizontal)
                 .bold()
                 .foregroundStyle(.accent)
+                .font(.title3)
             
             TextEditor(text: $emailText)
                 .padding()
@@ -55,6 +58,7 @@ struct LoginView: View {
                 .padding(.horizontal)
                 .bold()
                 .foregroundStyle(.accent)
+                .font(.title3)
             
             TextEditor(text: $passwordText)
                 .padding()
@@ -72,6 +76,7 @@ struct LoginView: View {
                 print("botao de Cadastrar pressionado")
             }, label: {
                 Text("Ainda não possui uma conta? Cadastre-se.")
+                    .font(.system(size: 18))
                     .bold()
             })
             
