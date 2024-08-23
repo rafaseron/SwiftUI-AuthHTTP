@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		13001E1A2C780E3A00B7EC7A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13001E192C780E3A00B7EC7A /* LoginView.swift */; };
 		133AF49C2C2A8C7F008B2EE4 /* AgendamentoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 133AF49B2C2A8C7F008B2EE4 /* AgendamentoView.swift */; };
 		134036B42C20034E00479CAD /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134036B32C20034E00479CAD /* MockData.swift */; };
 		136896262C2C017400BEBB05 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136896252C2C017400BEBB05 /* Date+.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		13001E192C780E3A00B7EC7A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		133AF49B2C2A8C7F008B2EE4 /* AgendamentoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendamentoView.swift; sourceTree = "<group>"; };
 		134036B32C20034E00479CAD /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		136896252C2C017400BEBB05 /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 				133AF49B2C2A8C7F008B2EE4 /* AgendamentoView.swift */,
 				1385BA8F2C34307D00FC1874 /* ConsultasView.swift */,
 				136EB13B2C754531001FEFF5 /* CancelAppointmentView.swift */,
+				13001E192C780E3A00B7EC7A /* LoginView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 				484BEF032AB0F7080033C07A /* SpecialistCardView.swift in Sources */,
 				1368962A2C2E5D5D00BEBB05 /* Schedule.swift in Sources */,
 				1385BA902C34307D00FC1874 /* ConsultasView.swift in Sources */,
+				13001E1A2C780E3A00B7EC7A /* LoginView.swift in Sources */,
 				13C878542C56373200849FE2 /* Appointment.swift in Sources */,
 				134036B42C20034E00479CAD /* MockData.swift in Sources */,
 				136896282C2C018600BEBB05 /* String+.swift in Sources */,
