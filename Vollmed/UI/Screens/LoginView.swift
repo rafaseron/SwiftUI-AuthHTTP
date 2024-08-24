@@ -43,7 +43,7 @@ struct LoginView: View {
                 .foregroundStyle(.accent)
                 .font(.title3)
             
-            TextEditor(text: $emailText)
+            TextField("seu e-mail aqui", text: $emailText)
                 .padding()
                 .foregroundStyle(.accent)
                 .scrollContentBackground(.hidden)
@@ -60,7 +60,7 @@ struct LoginView: View {
                 .foregroundStyle(.accent)
                 .font(.title3)
             
-            TextEditor(text: $passwordText)
+            SecureField("sua senha aqui", text: $passwordText)
                 .padding()
                 .foregroundStyle(.accent)
                 .scrollContentBackground(.hidden)
