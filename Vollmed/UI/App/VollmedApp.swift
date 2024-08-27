@@ -11,7 +11,10 @@ import SwiftUI
 struct VollmedApp: App {
     var body: some Scene {
         WindowGroup {
-            AppTabView()
+            NavigationStack{
+                LoginView()
+            }
+            //AppTabView()
         }
     }
 }

@@ -15,7 +15,11 @@ struct LoginView: View {
     
     
     var body: some View {
-        VStack(spacing: 16){
+        ScrollView{
+            Spacer()
+                .frame(height: 50)
+            VStack(spacing: 16){
+                
             Image(.logo)
                 .resizable()
                 .scaledToFit()
@@ -69,18 +73,26 @@ struct LoginView: View {
                 .clipShape(.buttonBorder)
                 .padding(.horizontal)
             
-            ButtonView(text: "Entrar")
-                .padding(.horizontal)
-            
             Button(action: {
-                print("botao de Cadastrar pressionado")
+                print("Botao de Entrar pressionado")
             }, label: {
+                ButtonView(text: "Entrar")
+                    .padding(.horizontal)
+            })
+            
+            NavigationLink {
+                RegisterView()
+            } label: {
                 Text("Ainda não possui uma conta? Cadastre-se.")
                     .font(.system(size: 18))
                     .bold()
-            })
-            
-        }
+            }
+
+
+        }.navigationTitle("Entrar")
+            .navigationBarTitleDisplayMode(.large)
+        }.scrollIndicators(.hidden)
+        
         
     }
 }
