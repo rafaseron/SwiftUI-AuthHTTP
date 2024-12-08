@@ -30,6 +30,7 @@ struct AgendamentoView: View {
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.accent)
                 .padding(.top)
+                .padding(.bottom, 10.0)
             
             // Conteúdo visual da RescheduleView -> Text com Data atual, atualizar o date do DatePicker com a Data atual
             if isRescheduleView{
@@ -52,7 +53,7 @@ struct AgendamentoView: View {
                 }
             }
             
-            DatePicker("Escola a data da consulta", selection: $data)
+            DatePicker("Escolha a data da consulta", selection: $data)
                 .datePickerStyle(.graphical)
             
             Button(action: {
