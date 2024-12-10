@@ -21,11 +21,11 @@ struct WebService {
         case requestError
     }
 
-    /// Função para prepar a baseURL
+    /// Function to prepare the baseURL
     ///
-    /// - Parameter endpoint: endpoint da requisição, é não obrigatório ao chamar a função
-    /// - Returns: URL preparada a partir da baseURL
-    /// - Throws: retorna nil caso não dê certo
+    /// - Parameter endpoint: request endpoint, it is optional when calling the function
+    /// - Returns: URL prepared from the baseURL
+    /// - Throws: returns nil if it fails
     func getBaseURL(_ endpoint: String = "") throws -> URL {
         if let url = URL(string: "\(baseURL)\(endpoint)") {
             return url
@@ -187,9 +187,10 @@ struct WebService {
         return true
     }
 
-    /// Função para Registrar um Paciente
+    /// Function to register a Patient
     ///
-    /// - Throws: requestError caso dê algum problema
+    /// - Parameter patient: is the Model that represents a Patient
+    /// - Throws: requestError if there is any problem
     func registerPatient(patient: Patient) async throws -> Patient {
         do {
             let url = try getBaseURL("/paciente")
@@ -206,5 +207,23 @@ struct WebService {
         } catch {
             throw RequestError.requestError
         }
+    }
+
+    /// Function to make Login
+    ///
+    /// - Parameter login: request model for Login on API
+    /// - Returns LoginResponse: response model from API for Login
+    /// - Throws: may return an exception or return nil if something goes wrong
+    func login(login: LoginRequest) async throws -> LoginResponse? {
+        guard let url = URL(string: "\(baseURL)/auth/login") else {
+            return nil
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = try JSONEncoder().encode(login)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let session = try await URLSession.shared.data(for: request)
+        let decodedData = try JSONDecoder().decode(LoginResponse.self, from: session.0)
+        return decodedData
     }
 }
