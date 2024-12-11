@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct LoginView: View {
+    let service = WebService()
+
     @State var emailText: String = ""
     @State var passwordText: String = ""
+    @State var isAuthenticated: Bool = false
+    @State var showAlert: Bool = false
+    @State var alertMessage: String = ""
+
 
     var body: some View {
         ScrollView {
@@ -50,6 +56,7 @@ struct LoginView: View {
                     .frame(maxHeight: 48)
                     .clipShape(.buttonBorder)
                     .padding(.horizontal)
+                    .textInputAutocapitalization(.never)
                     .keyboardType(.emailAddress)
 
                 Text("Senha")
@@ -69,11 +76,23 @@ struct LoginView: View {
                     .padding(.horizontal)
 
                 Button(action: {
-                    print("Botao de Entrar pressionado")
+                    Task {
+                        let response = await login(login: LoginRequest(email: emailText, password: passwordText))
+                        if response != nil {
+                            isAuthenticated = true
+                            return
+                        }
+                        isAuthenticated = false
+                        alertMessage = "Oops! algo deu errado. Tente novamente."
+                        showAlert = true
+                        return
+                    }
                 }, label: {
                     ButtonView(text: "Entrar")
                         .padding(.horizontal)
-                })
+                }).alert(alertMessage, isPresented: $showAlert) {
+                    Button("Ok") { showAlert = false }
+                }
 
                 NavigationLink {
                     RegisterView()
@@ -83,9 +102,23 @@ struct LoginView: View {
                         .bold()
                 }
 
-            }.navigationTitle("Entrar")
-                .navigationBarTitleDisplayMode(.large)
+            }
+            .navigationTitle("Entrar")
+            .navigationBarTitleDisplayMode(.large)
+            .navigationBarBackButtonHidden()
+            .navigationDestination(isPresented: $isAuthenticated) {
+                HomeView()
+            }
         }.scrollIndicators(.hidden)
+    }
+
+    func login(login: LoginRequest) async -> LoginResponse? {
+        do {
+            let result = try await service.login(login: login)
+            return result
+        } catch {
+            return nil
+        }
     }
 }
 
