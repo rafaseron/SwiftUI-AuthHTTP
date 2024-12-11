@@ -66,6 +66,7 @@ struct HomeView: View {
         }
         .navigationTitle("Médicos")
         .navigationBarTitleDisplayMode(.large)
+        .navigationBarBackButtonHidden()
         
     }
     // MARK: - Métodos dentro de HomeView
