@@ -109,6 +109,7 @@ struct LoginView: View {
         do {
             let result = try await service.login(login: login)
             UserDefaultsHelper.save(forKey: UserDefaultsKeys.jwtToken.rawValue, value: result.token)
+            UserDefaultsHelper.save(forKey: UserDefaultsKeys.userId.rawValue, value: result.id)
             isAuthenticated = true
         } catch {
             alertMessage = "Ocorreu um erro. Tente novamnete"

@@ -9,6 +9,7 @@ import Foundation
 
 enum UserDefaultsKeys: String {
     case jwtToken
+    case userId
 }
 
 /// A Helper to use UserDefaults without instance that
