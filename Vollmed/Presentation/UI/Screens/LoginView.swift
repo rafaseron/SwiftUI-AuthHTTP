@@ -15,11 +15,11 @@ struct LoginView: View {
     @State var isAuthenticated: Bool = false
     @State var showAlert: Bool = false
     @State var alertMessage: String = ""
-
+    @State var isLoading: Bool = false
 
     var body: some View {
         ScrollView {
-            Spacer()
+            Spacer(minLength: 50.0)
                 .frame(height: 50)
             VStack(spacing: 16) {
                 Image(.logo)
@@ -77,6 +77,7 @@ struct LoginView: View {
                     .textInputAutocapitalization(.never)
 
                 Button(action: {
+                    isLoading = true
                     Task {
                         await login(login: LoginRequest(email: emailText, password: passwordText))
                     }
@@ -94,7 +95,6 @@ struct LoginView: View {
                         .font(.system(size: 18))
                         .bold()
                 }
-
             }
             .navigationTitle("Entrar")
             .navigationBarTitleDisplayMode(.large)
@@ -103,6 +103,11 @@ struct LoginView: View {
                 HomeView()
             }
         }.scrollIndicators(.hidden)
+        .overlay {
+                if isLoading {
+                    ProgressOverlay()
+                }
+            }
     }
 
     func login(login: LoginRequest) async {
@@ -110,8 +115,10 @@ struct LoginView: View {
             let result = try await service.login(login: login)
             UserDefaultsHelper.save(forKey: UserDefaultsKeys.jwtToken.rawValue, value: result.token)
             UserDefaultsHelper.save(forKey: UserDefaultsKeys.userId.rawValue, value: result.id)
+            isLoading = false
             isAuthenticated = true
         } catch {
+            isLoading = false
             alertMessage = "Ocorreu um erro. Tente novamnete"
             showAlert = true
         }
