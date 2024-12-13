@@ -117,6 +117,17 @@ struct LoginView: View {
             UserDefaultsHelper.save(forKey: UserDefaultsKeys.userId.rawValue, value: result.id)
             isLoading = false
             isAuthenticated = true
+        } catch let error as RequestError{
+            switch error {
+            case .invalidPassword:
+                alertMessage = "Senha inválida"
+            case .userNotFound:
+                alertMessage = "Usuário não encontrado"
+            default:
+                alertMessage = "Ocorreu um erro. Tente novamente"
+            }
+            isLoading = false
+            showAlert = true
         } catch {
             isLoading = false
             alertMessage = "Ocorreu um erro. Tente novamnete"

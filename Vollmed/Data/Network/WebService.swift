@@ -6,8 +6,17 @@
 //
 
 import UIKit
-
 // usar UIImage faz com que seja preciso importar o UIKit
+
+/// RequestError fora do WebService para Casting dos Erros.
+enum RequestError: Error {
+    case invalidURL
+    case requestError
+    case noResponse
+    case statusCode(_: Int)
+    case invalidPassword
+    case userNotFound
+}
 
 struct WebService {
     let patientId: String = "61c55f06-aeb9-4ef7-a706-6a29e6eccbc8"
@@ -15,13 +24,6 @@ struct WebService {
     // MARK: - BASE URL
 
     private let baseURL = "http://192.168.100.45:3000"
-
-    enum RequestError: Error {
-        case invalidURL
-        case requestError
-        case noResponse
-        case statusCode(_: Int)
-    }
 
     /// Function to prepare the baseURL
     ///
@@ -228,11 +230,20 @@ struct WebService {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw RequestError.noResponse
         }
-        if httpResponse.statusCode != 200 {
+        switch httpResponse.statusCode {
+        case 401:
+            throw RequestError.invalidPassword
+
+        case 404:
+            throw RequestError.userNotFound
+        case 200:
+            let decodedData = try JSONDecoder().decode(LoginResponse.self, from: data)
+            return decodedData
+
+        default:
             throw RequestError.statusCode(httpResponse.statusCode)
         }
 
-        let decodedData = try JSONDecoder().decode(LoginResponse.self, from: data)
-        return decodedData
+        
     }
 }
