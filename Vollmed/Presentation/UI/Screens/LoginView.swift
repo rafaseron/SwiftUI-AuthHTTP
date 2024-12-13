@@ -74,18 +74,11 @@ struct LoginView: View {
                     .frame(maxHeight: 48)
                     .clipShape(.buttonBorder)
                     .padding(.horizontal)
+                    .textInputAutocapitalization(.never)
 
                 Button(action: {
                     Task {
-                        let response = await login(login: LoginRequest(email: emailText, password: passwordText))
-                        if response != nil {
-                            isAuthenticated = true
-                            return
-                        }
-                        isAuthenticated = false
-                        alertMessage = "Oops! algo deu errado. Tente novamente."
-                        showAlert = true
-                        return
+                        await login(login: LoginRequest(email: emailText, password: passwordText))
                     }
                 }, label: {
                     ButtonView(text: "Entrar")
@@ -112,12 +105,14 @@ struct LoginView: View {
         }.scrollIndicators(.hidden)
     }
 
-    func login(login: LoginRequest) async -> LoginResponse? {
+    func login(login: LoginRequest) async {
         do {
             let result = try await service.login(login: login)
-            return result
+            UserDefaultsHelper.save(forKey: UserDefaultsKeys.jwtToken.rawValue, value: result.token)
+            isAuthenticated = true
         } catch {
-            return nil
+            alertMessage = "Ocorreu um erro. Tente novamnete"
+            showAlert = true
         }
     }
 }
