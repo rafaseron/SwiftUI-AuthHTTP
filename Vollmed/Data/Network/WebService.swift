@@ -14,11 +14,13 @@ struct WebService {
 
     // MARK: - BASE URL
 
-    private let baseURL = "http://192.168.13.220:3000"
+    private let baseURL = "http://192.168.100.45:3000"
 
     enum RequestError: Error {
         case invalidURL
         case requestError
+        case noResponse
+        case statusCode(_: Int)
     }
 
     /// Function to prepare the baseURL
@@ -214,16 +216,23 @@ struct WebService {
     /// - Parameter login: request model for Login on API
     /// - Returns LoginResponse: response model from API for Login
     /// - Throws: may return an exception or return nil if something goes wrong
-    func login(login: LoginRequest) async throws -> LoginResponse? {
+    func login(login: LoginRequest) async throws -> LoginResponse {
         guard let url = URL(string: "\(baseURL)/auth/login") else {
-            return nil
+            throw RequestError.invalidURL
         }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(login)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let session = try await URLSession.shared.data(for: request)
-        let decodedData = try JSONDecoder().decode(LoginResponse.self, from: session.0)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw RequestError.noResponse
+        }
+        if httpResponse.statusCode != 200 {
+            throw RequestError.statusCode(httpResponse.statusCode)
+        }
+
+        let decodedData = try JSONDecoder().decode(LoginResponse.self, from: data)
         return decodedData
     }
 }
