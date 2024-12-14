@@ -39,21 +39,15 @@ struct WebService {
 
     // MARK: - SPECIALISTS
 
-    func getAllSpecialists() async throws -> [Specialist]? {
-        // Preparar a URL
-        let getEndpoint = "\(baseURL)/especialista"
-
-        guard let url = URL(string: getEndpoint) else {
-            print("URL Error")
-            return nil
-        }
+    func getAllSpecialists() async throws -> [Specialist] {
+        let url = try getBaseURL("/especialista")
 
         // Prepar o Request
-        var getRequest = URLRequest(url: url)
-        getRequest.httpMethod = "GET"
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
 
         // Iniciar a Sessao
-        let (data, _) = try await URLSession.shared.data(for: getRequest)
+        let (data, _) = try await URLSession.shared.data(for: request)
 
         // Decodificar o 'Data' recebido na Sessao e retornar
         let dataDecode = try JSONDecoder().decode([Specialist].self, from: data)

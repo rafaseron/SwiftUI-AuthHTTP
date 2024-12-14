@@ -57,7 +57,7 @@ struct HomeView: View {
         .onAppear {
             loginVerification()
             Task {
-                await acessGetAllSpecialists()
+                await fetchSpecialists()
             }
         }
         // Também da pra usar o modificador .task -> funciona igual o onAppear + Task
@@ -74,16 +74,10 @@ struct HomeView: View {
 
     // MARK: - Métodos dentro de HomeView
 
-    func acessGetAllSpecialists() async {
+    func fetchSpecialists() async {
         do {
             let specialists = try await service.getAllSpecialists()
-
-            guard let specialistas = specialists else {
-                especialistasList = []
-                return
-            }
-
-            especialistasList = specialistas
+            especialistasList = specialists
 
         } catch {
             especialistasList = []
