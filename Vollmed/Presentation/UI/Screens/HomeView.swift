@@ -52,6 +52,19 @@ struct HomeView: View {
                 }
             }
             .padding(.horizontal)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        //action
+                    } label: {
+                        HStack {
+                            Image(systemName: "rectangle.portrait.and.arrow.forward")
+                            Text("Logout")
+                        }
+                    }
+
+                }
+            }
         }
         .padding(.top)
         .onAppear {
