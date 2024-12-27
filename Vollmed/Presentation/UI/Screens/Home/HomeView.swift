@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State var especialistasList: [Specialist] = []
-    @State var isNotAuthenticated: Bool = false
-
-    let service = WebService()
+    @StateObject private var viewModel: HomeViewModel = .init()
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -32,7 +29,7 @@ struct HomeView: View {
                     .multilineTextAlignment(.center)
                     .padding(.vertical, 16)
 
-                if especialistasList.isEmpty {
+                if viewModel.especialistasList.isEmpty {
                     Spacer()
                         .frame(height: 25)
 
@@ -45,7 +42,7 @@ struct HomeView: View {
                         .font(.system(size: 50))
 
                 } else {
-                    ForEach(especialistasList) { specialist in
+                    ForEach(viewModel.especialistasList) { specialist in
                         SpecialistCardView(specialist: specialist)
                             .padding(.bottom, 8)
                     }
@@ -55,22 +52,21 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        //action
+                        // action
                     } label: {
                         HStack {
                             Image(systemName: "rectangle.portrait.and.arrow.forward")
                             Text("Logout")
                         }
                     }
-
                 }
             }
         }
         .padding(.top)
         .onAppear {
-            loginVerification()
+            viewModel.loginVerification()
             Task {
-                await fetchSpecialists()
+                await viewModel.fetchSpecialists()
             }
         }
         // Também da pra usar o modificador .task -> funciona igual o onAppear + Task
@@ -80,29 +76,8 @@ struct HomeView: View {
         .navigationTitle("Médicos")
         .navigationBarTitleDisplayMode(.large)
         .navigationBarBackButtonHidden()
-        .navigationDestination(isPresented: $isNotAuthenticated) {
+        .navigationDestination(isPresented: $viewModel.isNotAuthenticated) {
             LoginView()
-        }
-    }
-
-    // MARK: - Métodos dentro de HomeView
-
-    func fetchSpecialists() async {
-        do {
-            let specialists = try await service.getAllSpecialists()
-            especialistasList = specialists
-
-        } catch {
-            especialistasList = []
-        }
-    }
-
-    func loginVerification() {
-        do {
-            let _ = try UserDefaultsHelper.read(forKey: UserDefaultsKeys.jwtToken.rawValue)
-            let _ = try UserDefaultsHelper.read(forKey: UserDefaultsKeys.userId.rawValue)
-        } catch {
-            isNotAuthenticated = true
         }
     }
 }

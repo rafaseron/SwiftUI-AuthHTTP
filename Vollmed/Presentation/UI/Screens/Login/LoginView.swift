@@ -8,14 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    let service = WebService()
-
-    @State var emailText: String = ""
-    @State var passwordText: String = ""
-    @State var isAuthenticated: Bool = false
-    @State var showAlert: Bool = false
-    @State var alertMessage: String = ""
-    @State var isLoading: Bool = false
+    @StateObject private var viewModel: LoginViewModel = .init()
 
     var body: some View {
         ScrollView {
@@ -48,7 +41,7 @@ struct LoginView: View {
                     .foregroundStyle(.accent)
                     .font(.title3)
 
-                TextField("Seu e-mail aqui", text: $emailText)
+                TextField("Seu e-mail aqui", text: $viewModel.emailText)
                     .padding()
                     .foregroundStyle(.accent)
                     .scrollContentBackground(.hidden)
@@ -66,7 +59,7 @@ struct LoginView: View {
                     .foregroundStyle(.accent)
                     .font(.title3)
 
-                SecureField("Sua senha aqui", text: $passwordText)
+                SecureField("Sua senha aqui", text: $viewModel.passwordText)
                     .padding()
                     .foregroundStyle(.accent)
                     .scrollContentBackground(.hidden)
@@ -77,15 +70,15 @@ struct LoginView: View {
                     .textInputAutocapitalization(.never)
 
                 Button(action: {
-                    isLoading = true
+                    viewModel.isLoading = true
                     Task {
-                        await login(login: LoginRequest(email: emailText, password: passwordText))
+                        await viewModel.login(login: LoginRequest(email: viewModel.emailText, password: viewModel.passwordText))
                     }
                 }, label: {
                     ButtonView(text: "Entrar")
                         .padding(.horizontal)
-                }).alert(alertMessage, isPresented: $showAlert) {
-                    Button("Ok") { showAlert = false }
+                }).alert(viewModel.alertMessage, isPresented: $viewModel.showAlert) {
+                    Button("Ok") { viewModel.showAlert = false }
                 }
 
                 NavigationLink {
@@ -99,40 +92,15 @@ struct LoginView: View {
             .navigationTitle("Entrar")
             .navigationBarTitleDisplayMode(.large)
             .navigationBarBackButtonHidden()
-            .navigationDestination(isPresented: $isAuthenticated) {
+            .navigationDestination(isPresented: $viewModel.isAuthenticated) {
                 HomeView()
             }
         }.scrollIndicators(.hidden)
-        .overlay {
-                if isLoading {
+            .overlay {
+                if viewModel.isLoading {
                     ProgressOverlay()
                 }
             }
-    }
-
-    func login(login: LoginRequest) async {
-        do {
-            let result = try await service.login(login: login)
-            UserDefaultsHelper.save(forKey: UserDefaultsKeys.jwtToken.rawValue, value: result.token)
-            UserDefaultsHelper.save(forKey: UserDefaultsKeys.userId.rawValue, value: result.id)
-            isLoading = false
-            isAuthenticated = true
-        } catch let error as RequestError{
-            switch error {
-            case .invalidPassword:
-                alertMessage = "Senha inválida"
-            case .userNotFound:
-                alertMessage = "Usuário não encontrado"
-            default:
-                alertMessage = "Ocorreu um erro. Tente novamente"
-            }
-            isLoading = false
-            showAlert = true
-        } catch {
-            isLoading = false
-            alertMessage = "Ocorreu um erro. Tente novamnete"
-            showAlert = true
-        }
     }
 }
 

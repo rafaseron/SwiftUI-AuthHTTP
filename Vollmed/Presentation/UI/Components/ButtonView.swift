@@ -15,12 +15,12 @@ enum ButtonType {
 struct ButtonView: View {
     var text: String
     var buttonType: ButtonType
-    
+
     init(text: String, buttonType: ButtonType = .primary) {
         self.text = text
         self.buttonType = buttonType
     }
-    
+
     var body: some View {
         Text(text)
             .bold()
