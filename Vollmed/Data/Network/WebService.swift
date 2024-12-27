@@ -6,6 +6,7 @@
 //
 
 import UIKit
+
 // usar UIImage faz com que seja preciso importar o UIKit
 
 /// RequestError fora do WebService para Casting dos Erros.
@@ -13,13 +14,38 @@ enum RequestError: Error {
     case invalidURL
     case requestError
     case noResponse
-    case statusCode(_: Int)
+    case statusCode(_ code: Int)
     case invalidPassword
     case userNotFound
+    case emptyResponse
+}
+
+extension RequestError: LocalizedError {
+    private var errorDescription: String {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL"
+        case .requestError:
+            return "Failed to do Request"
+        case .noResponse:
+            return "No Response on Request"
+        case let .statusCode(code):
+            return "Request StatusCode: \(code)"
+        case .invalidPassword:
+            return "Invalid Password"
+        case .userNotFound:
+            return "User doesnt exist"
+        case .emptyResponse:
+            return "Empty Response"
+        }
+    }
 }
 
 struct WebService {
-    let patientId: String = "61c55f06-aeb9-4ef7-a706-6a29e6eccbc8"
+    static let shared = WebService()
+    static let patientId: String = "61c55f06-aeb9-4ef7-a706-6a29e6eccbc8"
+
+    private init() {}
 
     // MARK: - BASE URL
 
@@ -230,6 +256,7 @@ struct WebService {
 
         case 404:
             throw RequestError.userNotFound
+
         case 200:
             let decodedData = try JSONDecoder().decode(LoginResponse.self, from: data)
             return decodedData
@@ -237,7 +264,5 @@ struct WebService {
         default:
             throw RequestError.statusCode(httpResponse.statusCode)
         }
-
-        
     }
 }
