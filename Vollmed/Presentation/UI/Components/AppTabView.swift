@@ -1,5 +1,5 @@
 //
-//  TabView.swift
+//  AppTabView.swift
 //  Vollmed
 //
 //  Created by Rafael Seron on 02/07/24.
@@ -11,7 +11,7 @@ struct AppTabView: View {
     var body: some View {
         TabView {
             // Item 1 da TabView
-            NavigationStack{
+            NavigationStack {
                 HomeView()
             }.tabItem {
                 Label(
@@ -20,13 +20,12 @@ struct AppTabView: View {
                 )
             }
             // Item 2 da TabView
-            NavigationStack{
+            NavigationStack {
                 ConsultasView()
             }.tabItem { Label(
                 title: { Text("Minhas consultas") },
                 icon: { Image(systemName: "calendar") }
             ) }
-            
         }
     }
 }

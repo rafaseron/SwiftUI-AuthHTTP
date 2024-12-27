@@ -13,7 +13,7 @@ enum UserDefaultsKeys: String {
 }
 
 /// A Helper to use UserDefaults without instance that
-struct UserDefaultsHelper {
+enum UserDefaultsHelper {
     enum UserDefaultsError: Error {
         case valueNotFound
     }

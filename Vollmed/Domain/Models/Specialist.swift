@@ -15,7 +15,7 @@ struct Specialist: Identifiable, Codable {
     let specialty: String
     let email: String
     let phoneNumber: String
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case name = "nome"

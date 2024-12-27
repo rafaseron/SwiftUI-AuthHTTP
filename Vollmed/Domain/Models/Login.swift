@@ -6,12 +6,12 @@
 //
 
 /// Login Request Model
-/// 
+///
 /// - This model is used to send a login request to API
 struct LoginRequest {
     let email: String
     let password: String
-    
+
     enum CodingKeys: String, CodingKey {
         case email
         case password = "senha"
@@ -19,7 +19,7 @@ struct LoginRequest {
 }
 
 /// Login Response Model
-/// 
+///
 /// - This model is used to receive a response from API login request
 struct LoginResponse {
     let auth: Bool
@@ -27,9 +27,7 @@ struct LoginResponse {
     let token: String
 }
 
-extension LoginRequest: Encodable {
-    
-}
+extension LoginRequest: Encodable {}
 
 extension LoginResponse: Identifiable, Decodable {
     private enum CodingKeys: String, CodingKey {

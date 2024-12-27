@@ -8,47 +8,34 @@
 import SwiftUI
 
 struct ConsultasView: View {
-    let service = WebService()
-    @State var appointments: [Appointment] = []
-    
+    @StateObject private var viewModel: ConsultasViewModel = .init()
+
     var body: some View {
-        ScrollView(showsIndicators: false){
-            LazyVStack(spacing: 16.0){
-                ForEach(appointments){ appointment in
-                    SpecialistCardView(specialist: appointment.specialist,
-                                       isAppointmentView: true, appointment: appointment)
+        ScrollView(showsIndicators: false) {
+            LazyVStack(alignment: .center, spacing: 16.0) {
+                if !viewModel.appointments.isEmpty {
+                    ForEach(viewModel.appointments) { appointment in
+                        SpecialistCardView(specialist: appointment.specialist,
+                                           isAppointmentView: true, appointment: appointment)
+                    }
+                } else {
+                    Image(systemName: "minus.circle")
+                        .bold()
+                        .font(.title)
+                    Text("Sem consultas agendadas")
                 }
             }
+            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
             .padding(.horizontal)
-        }.onAppear{
-            //code
+        }.onAppear {
+            // code
         }
-        .task{
-            await getAllAppointmentsForThisPatient()
+        .task {
+            let _ = await viewModel.getAllAppointmentsForThisPatient()
         }
         .navigationTitle("Agendadas")
         .navigationBarTitleDisplayMode(.large)
-        
-        
     }
-    
-    // MARK: - Escopo dentro da struct ConsultasView
-    
-    func getAllAppointmentsForThisPatient() async {
-        do{
-            guard let appointmentList = try await service.getAppointmentsByPatientId(idPaciente: service.patientId) else{
-                return
-            }
-            
-            appointments = appointmentList
-            
-        }
-        catch{
-            print("Erro GET consultas by Id Paciente -> \(error)")
-        }
-    }
-    
-    
 }
 
 #Preview {

@@ -7,15 +7,14 @@
 
 import Foundation
 
-struct Appointment: Identifiable, Codable{
+struct Appointment: Identifiable, Codable {
     let id: String
     let appointmentDate: String
     let specialist: Specialist
-    
-    enum CodingKeys: String, CodingKey{
-        case id = "id"
+
+    enum CodingKeys: String, CodingKey {
+        case id
         case appointmentDate = "data"
         case specialist = "especialista"
     }
-    
 }

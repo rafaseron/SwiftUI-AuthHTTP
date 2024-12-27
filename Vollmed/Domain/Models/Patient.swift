@@ -6,7 +6,7 @@
 //
 
 /// This Struct represents a Patient in our application.
-/// 
+///
 /// - id: optional, because when we are registering a patient, the id does not exist yet. But when we are receiving a patient from the API, the id already exists.
 /// - cpf: CPF of the patient.
 /// - name: name of the patient.
@@ -22,12 +22,12 @@ struct Patient: Codable, Identifiable {
     let password: String
     let phone: String
     let healthPlan: String
-    
+
     enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case cpf = "cpf"
+        case id
+        case cpf
         case name = "nome"
-        case email = "email"
+        case email
         case password = "senha"
         case phone = "telefone"
         case healthPlan = "planoSaude"

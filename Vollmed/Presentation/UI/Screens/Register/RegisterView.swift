@@ -8,17 +8,7 @@
 import SwiftUI
 
 struct RegisterView: View {
-    let service: WebService = .init()
-
-    @State var name: String = ""
-    @State var phoneNumber: String = ""
-    @State var email: String = ""
-    @State var cpf: String = ""
-    @State var password: String = ""
-    @State var selectedPlan: String = ""
-    @State var showAlert: Bool = false
-    @State var alertMessage: String = ""
-    @State var isRequestSucessfull: Bool = false
+    @StateObject var viewModel: RegisterViewModel = .init()
 
     var body: some View {
         ScrollView {
@@ -51,7 +41,7 @@ struct RegisterView: View {
                     .foregroundStyle(.accent)
                     .font(.title3)
 
-                TextField("Digite seu nome", text: $name)
+                TextField("Digite seu nome", text: $viewModel.name)
                     .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 50)
                     .padding(Edge.Set.horizontal, 16)
                     .background(Color.secondary.opacity(0.1))
@@ -66,7 +56,7 @@ struct RegisterView: View {
                     .foregroundStyle(.accent)
                     .font(.title3)
 
-                TextField("Digite seu telefone", text: $phoneNumber)
+                TextField("Digite seu telefone", text: $viewModel.phoneNumber)
                     .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 50)
                     .padding(Edge.Set.horizontal, 16)
                     .background(Color.secondary.opacity(0.1))
@@ -82,7 +72,7 @@ struct RegisterView: View {
                     .foregroundStyle(.accent)
                     .font(.title3)
 
-                TextField("Digite seu CPF", text: $cpf)
+                TextField("Digite seu CPF", text: $viewModel.cpf)
                     .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 50)
                     .padding(Edge.Set.horizontal, 16)
                     .background(Color.secondary.opacity(0.1))
@@ -100,7 +90,7 @@ struct RegisterView: View {
 
                 TextField(
                     "Digite seu email",
-                    text: $email
+                    text: $viewModel.email
                 )
                 .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 50)
                 .padding(Edge.Set.horizontal, 16)
@@ -118,7 +108,7 @@ struct RegisterView: View {
                     .foregroundStyle(.accent)
                     .font(.title3)
 
-                SecureField("Digite sua senha", text: $password)
+                SecureField("Digite sua senha", text: $viewModel.password)
                     .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 50)
                     .padding(Edge.Set.horizontal, 16)
                     .background(Color.secondary.opacity(0.1))
@@ -135,7 +125,7 @@ struct RegisterView: View {
                         .foregroundStyle(.accent)
                         .font(.title3)
 
-                    Picker("Selecione seu plano de saúde", selection: $selectedPlan) {
+                    Picker("Selecione seu plano de saúde", selection: $viewModel.selectedPlan) {
                         ForEach(healPlanList, id: \.self) { plan in
                             Text(plan)
                         }
@@ -143,24 +133,24 @@ struct RegisterView: View {
                 }
 
                 Button {
-                    let result = validateFields()
+                    let result = viewModel.validateFields()
                     if !result {
-                        alertMessage = "Preencha todos os campos"
-                        showAlert = true
+                        viewModel.alertMessage = "Preencha todos os campos"
+                        viewModel.showAlert = true
                         return
                     }
-                    if selectedPlan == "" {
-                        alertMessage = "Você deve selecionar um Plano de Saúde"
-                        showAlert = true
+                    if viewModel.selectedPlan == "" {
+                        viewModel.alertMessage = "Você deve selecionar um Plano de Saúde"
+                        viewModel.showAlert = true
                         return
                     }
                     Task {
-                        await registerPatient()
+                        await viewModel.registerPatient()
                     }
 
                 } label: {
                     ButtonView(text: "Cadastrar")
-                }.alert(alertMessage, isPresented: $showAlert) {
+                }.alert(viewModel.alertMessage, isPresented: $viewModel.showAlert) {
                     Button("Ok", role: .cancel) {}
                 }
 
@@ -179,35 +169,10 @@ struct RegisterView: View {
             .navigationTitle("Cadastro")
             .navigationBarTitleDisplayMode(.large)
             .navigationBarBackButtonHidden()
-            .navigationDestination(isPresented: $isRequestSucessfull) {
+            .navigationDestination(isPresented: $viewModel.isRequestSucessfull) {
                 LoginView()
             }
         }.scrollIndicators(.hidden)
-    }
-    
-    /// Personal information forms validation
-    ///
-    /// - Returns false if forms are empty
-    /// - Returns true if forms are not empty
-    func validateFields() -> Bool {
-        if cpf.isEmpty || name.isEmpty || email.isEmpty || password.isEmpty || phoneNumber.isEmpty {
-            return false
-        }
-        return true
-    }
-
-    func registerPatient() async {
-        do {
-            let patient = Patient(id: nil, cpf: cpf, name: name, email: email, password: password, phone: phoneNumber, healthPlan: selectedPlan)
-            let _ = try await service.registerPatient(patient: patient)
-            alertMessage = "Cadastro realizado com sucesso! Você será redirecionado para o Login."
-            showAlert = true
-            try await Task.sleep(nanoseconds: 2_000_000_000)
-            isRequestSucessfull = true
-        } catch {
-            showAlert = true
-            alertMessage = "Ocorreu um erro. Tente novamente mais tarde"
-        }
     }
 }
 
